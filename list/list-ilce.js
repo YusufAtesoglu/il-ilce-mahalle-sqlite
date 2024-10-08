@@ -8,17 +8,20 @@ let db = new sqlite3.Database('../turkiye.db', (err) => {
     console.log('SQLite veritabanına başarıyla bağlandı.');
 });
 
-// İlçeleri görüntüleme
-db.all("SELECT * FROM ilce", [], (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    rows.forEach((row) => {
-        console.log(`${row.id} | İl ID: ${row.il_id} | İlçe: ${row.name}`);
+// İlçeleri veritabanından çekme ve görüntüleme
+db.serialize(() => {
+    db.all("SELECT * FROM ilce", [], (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        // Verileri konsola yazdır
+        rows.forEach((row) => {
+            console.log(`${row.ilce_id}: ${row.ilce_adi}, Şehir: ${row.sehir_adi}`);
+        });
     });
 });
 
-// Veritabanını kapatma
+// Veritabanı bağlantısını kapatma
 db.close((err) => {
     if (err) {
         console.error(err.message);
